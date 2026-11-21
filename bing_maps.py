@@ -50,10 +50,20 @@ class bing_maps:
             self.all_working_proxies = []
             logging.warning("proxies.txt not found. Proceeding without proxies.")
 
-        # temp input
-        # query = "cafe in barishal, bangladesh"
-        query = input("Please enter search query: ")
-        self.queries = [query]
+        env = dict(os.environ)
+        if env.get('JENKINS_URL'):
+            queries = env.get("Search_queries")
+            if queries:
+                queries = [i.strip() for i in queries.splitlines() if i.strip()]
+                logging.info(f"Total input queries found: {len(queries)}")
+            else:
+                raise Exception("No input queries found")
+        else:
+            # temp input
+            # queries = ["cafe in barishal, bangladesh"]
+            queries = [input("Please enter the Search query you would like to scrape: ")]
+
+        self.queries = queries
         self.main_records = []
         self.start_process()
 
